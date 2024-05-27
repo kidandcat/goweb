@@ -1,12 +1,12 @@
-package main
+package backend
+
+var APIClient struct {
+	Read  func() string
+	Write func(string) error
+}
 
 type API struct {
 	note string
-}
-
-var api struct {
-	Read  func() string
-	Write func(string) error
 }
 
 func (h *API) Read() string {
