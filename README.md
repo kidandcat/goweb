@@ -1,7 +1,5 @@
 # GoWeb
 
-## Description
-
 An easy way to setup an end to end Go web service.
 
 ## Table of Contents
