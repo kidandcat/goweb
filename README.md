@@ -1,6 +1,6 @@
 # GoWeb
 
-An easy way to setup an end to end Go web service.
+An easy way to setup an end to end Go web service using [Go-App](https://go-app.dev) for the frontend and [Go-JSONRPC](https://github.com/filecoin-project/go-jsonrpc) for communications.
 
 ## Table of Contents
 
