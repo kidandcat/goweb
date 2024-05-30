@@ -15,16 +15,17 @@ type Hello struct {
 func (h *Hello) Render() app.UI {
 	return app.Div().Body(
 		app.H1().Text("Hello World!"),
+		&Clock{},
 		app.Textarea().
 			Attr("value", h.initialNote).
 			OnInput(func(ctx app.Context, e app.Event) {
 				text := ctx.JSSrc().Get("value").String()
-				err := backend.APIClient.Write(text)
+				err := backend.NotesClient.Write(text)
 				fmt.Println("api.Write", text, err)
 			}),
 	)
 }
 
 func (h *Hello) OnMount(ctx app.Context) {
-	h.initialNote = backend.APIClient.Read()
+	h.initialNote = backend.NotesClient.Read()
 }

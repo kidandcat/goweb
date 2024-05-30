@@ -21,7 +21,9 @@ func main() {
 	if app.IsClient {
 		rpcUrl := fmt.Sprintf("http://%s/rpc", app.Window().URL().Host)
 		_, err := jsonrpc.NewMergeClient(context.Background(), rpcUrl, "SimpleServerHandler", []any{
-			&backend.APIClient,
+			// Add service clients here
+			&backend.NotesClient,
+			&backend.ClockClient,
 		}, nil, jsonrpc.WithHTTPClient(&http.Client{}))
 		if err != nil {
 			log.Fatal(err)
@@ -30,9 +32,11 @@ func main() {
 	app.RunWhenOnBrowser()
 
 	rpcServer := jsonrpc.NewServer()
-	rpcServer.Register("SimpleServerHandler", &backend.API{})
-	http.Handle("/rpc", enableCors(rpcServer))
+	// Register services here
+	rpcServer.Register("SimpleServerHandler", &backend.Notes{})
+	rpcServer.Register("SimpleServerHandler", &backend.Clock{})
 
+	http.Handle("/rpc", enableCors(rpcServer))
 	http.Handle("/", &app.Handler{
 		Name:        "Hello RPC",
 		Description: "An Hello World! example",

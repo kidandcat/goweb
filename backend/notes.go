@@ -1,18 +1,18 @@
 package backend
 
-var APIClient struct {
+var NotesClient struct {
 	Read  func() string
 	Write func(string) error
 }
 
-type API struct {
+type Notes struct {
 	note string
 }
 
-func (h *API) Read() string {
+func (h *Notes) Read() string {
 	return h.note
 }
 
-func (h *API) Write(in string) {
+func (h *Notes) Write(in string) {
 	h.note = in
 }
