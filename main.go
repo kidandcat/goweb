@@ -12,6 +12,22 @@ import (
 	"github.com/maxence-charriere/go-app/v10/pkg/app"
 )
 
+var SERVICES = map[string]Service{
+	"Notes": {
+		Service: &backend.Notes{},
+		Client:  &backend.NotesClient,
+	},
+	"Clock": {
+		Service: &backend.Clock{},
+		Client:  &backend.ClockClient,
+	},
+}
+
+type Service struct {
+	Service interface{}
+	Client  interface{}
+}
+
 func main() {
 	// Components routing:
 	app.Route("/hello", func() app.Composer {
@@ -20,23 +36,23 @@ func main() {
 
 	if app.IsClient {
 		rpcUrl := fmt.Sprintf("http://%s/rpc", app.Window().URL().Host)
-		_, err := jsonrpc.NewMergeClient(context.Background(), rpcUrl, "SimpleServerHandler", []any{
-			// Add service clients here
-			&backend.NotesClient,
-			&backend.ClockClient,
-		}, nil, jsonrpc.WithHTTPClient(&http.Client{}))
-		if err != nil {
-			log.Fatal(err)
+		for name, service := range SERVICES {
+			_, err := jsonrpc.NewMergeClient(context.Background(), rpcUrl, name, []any{
+				service.Client,
+			}, nil, jsonrpc.WithHTTPClient(&http.Client{}))
+			if err != nil {
+				log.Fatal(err)
+			}
 		}
 	}
 	app.RunWhenOnBrowser()
 
 	rpcServer := jsonrpc.NewServer()
-	// Register services here
-	rpcServer.Register("SimpleServerHandler", &backend.Notes{})
-	rpcServer.Register("SimpleServerHandler", &backend.Clock{})
-
+	for name, service := range SERVICES {
+		rpcServer.Register(name, service.Service)
+	}
 	http.Handle("/rpc", enableCors(rpcServer))
+
 	http.Handle("/", &app.Handler{
 		Name:        "Hello RPC",
 		Description: "An Hello World! example",

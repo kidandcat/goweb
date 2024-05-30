@@ -29,7 +29,7 @@ func (h *Clock) OnMount(ctx app.Context) {
 }
 
 func (h *Clock) Update(ctx app.Context) {
-	now, err := backend.ClockClient.Now()
+	now, err := backend.ClockClient.Read()
 	if err != nil {
 		fmt.Println("api.Now", err)
 	}
