@@ -15,7 +15,7 @@ import (
 
 var SERVICES = map[string]Service{
 	"Notes": {
-		Service: &backend.Notes{},
+		Service: &backend.NotesService{},
 		Client:  &backend.NotesClient,
 	},
 	"Clock": {
