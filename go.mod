@@ -12,6 +12,7 @@ require (
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/ipfs/go-log/v2 v2.0.8 // indirect
+	github.com/klauspost/compress v1.17.8 // indirect
 	go.opencensus.io v0.22.3 // indirect
 	go.uber.org/atomic v1.6.0 // indirect
 	go.uber.org/multierr v1.5.0 // indirect

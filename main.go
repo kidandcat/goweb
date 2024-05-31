@@ -9,6 +9,7 @@ import (
 	"net/http"
 
 	"github.com/filecoin-project/go-jsonrpc"
+	"github.com/klauspost/compress/gzhttp"
 	"github.com/maxence-charriere/go-app/v10/pkg/app"
 )
 
@@ -51,10 +52,10 @@ func main() {
 	}
 	http.Handle("/rpc", enableCors(rpcServer))
 
-	http.Handle("/", &app.Handler{
+	http.Handle("/", gzhttp.GzipHandler(&app.Handler{
 		Name:        "Hello RPC",
 		Description: "An Hello World! example",
-	})
+	}))
 
 	log.Println("Server started on http://localhost:8000")
 	if err := http.ListenAndServe(":8000", nil); err != nil {
