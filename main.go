@@ -58,6 +58,7 @@ func main() {
 		Description: "An Hello World! example",
 	})
 
+	log.Println("Server started on http://localhost:8000")
 	if err := http.ListenAndServe(":8000", nil); err != nil {
 		log.Fatal(err)
 	}
