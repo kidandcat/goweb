@@ -30,8 +30,7 @@ type Service struct {
 }
 
 func main() {
-	// Components routing:
-	app.Route("/hello", app.NewZeroComponentFactory(&frontend.Hello{}))
+	frontend.RegisterRoutes()
 
 	if app.IsClient {
 		rpcUrl := fmt.Sprintf("http://%s/rpc", app.Window().URL().Host)
