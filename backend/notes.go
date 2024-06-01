@@ -8,7 +8,7 @@ type Note struct {
 }
 
 var NotesClient struct {
-	Read  func() string
+	Read  func() (string, error)
 	Write func(string) error
 }
 

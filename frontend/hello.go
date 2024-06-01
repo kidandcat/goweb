@@ -27,5 +27,9 @@ func (h *Hello) Render() app.UI {
 }
 
 func (h *Hello) OnMount(ctx app.Context) {
-	h.initialNote = backend.NotesClient.Read()
+	var err error
+	h.initialNote, err = backend.NotesClient.Read()
+	if err != nil {
+		fmt.Println("NotesClient.Read", err)
+	}
 }
