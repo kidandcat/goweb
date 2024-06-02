@@ -12,26 +12,28 @@ var NotesClient struct {
 }
 
 type NotesService struct {
-	db *gorm.DB
+	db         *gorm.DB
+	repository models.NoteRepository
 }
 
 func NewNotesService(db *gorm.DB) *NotesService {
-	return &NotesService{db: db}
+	return &NotesService{
+		db:         db,
+		repository: *models.NewNoteRepository(db),
+	}
 }
 
-func (h *NotesService) Read() string {
-	var note models.Note
-	h.db.First(&note)
-	return note.Content
+func (h *NotesService) Read() (string, error) {
+	n := h.repository.First()
+	return n.Content, nil
 }
 
 func (h *NotesService) Write(in string) {
-	var n models.Note
-	res := h.db.First(&n)
-	if res.RowsAffected == 0 {
-		h.db.Create(&models.Note{Content: in})
+	n := h.repository.First()
+	if n == nil {
+		h.repository.Create(&models.Note{Content: in})
 	} else {
 		n.Content = in
-		h.db.Save(&n)
+		h.repository.Save(n)
 	}
 }

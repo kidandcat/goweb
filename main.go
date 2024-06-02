@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"goweb/backend/models"
 	"goweb/backend/services"
 	"goweb/frontend"
 	"log"
@@ -67,8 +66,6 @@ func initializeDatabase() *gorm.DB {
 	if err != nil {
 		panic("failed to connect database")
 	}
-	// 3. Add an AutoMigrate if you create a new model
-	db.AutoMigrate(&models.Note{})
 	return db
 }
 

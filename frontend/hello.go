@@ -3,6 +3,7 @@ package frontend
 import (
 	"fmt"
 	"goweb/backend/services"
+	"strings"
 
 	"github.com/maxence-charriere/go-app/v10/pkg/app"
 )
@@ -21,6 +22,10 @@ func (h *Hello) Render() app.UI {
 			OnInput(func(ctx app.Context, e app.Event) {
 				text := ctx.JSSrc().Get("value").String()
 				err := services.NotesClient.Write(text)
+				if err != nil {
+					msgs := strings.Split(err.Error(), ":")
+					app.Window().Call("alert", msgs[len(msgs)-1])
+				}
 				fmt.Println("api.Write", text, err)
 			}),
 	)
