@@ -2,7 +2,7 @@ package frontend
 
 import (
 	"fmt"
-	"goweb/backend"
+	"goweb/backend/services"
 	"time"
 
 	"github.com/maxence-charriere/go-app/v10/pkg/app"
@@ -29,7 +29,7 @@ func (h *Clock) OnMount(ctx app.Context) {
 }
 
 func (h *Clock) Update(ctx app.Context) {
-	now, err := backend.ClockClient.Read()
+	now, err := services.ClockClient.Read()
 	if err != nil {
 		fmt.Println("api.Now", err)
 	}

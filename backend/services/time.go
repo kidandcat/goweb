@@ -1,4 +1,4 @@
-package backend
+package services
 
 import "time"
 
@@ -7,6 +7,10 @@ var ClockClient struct {
 }
 
 type Clock struct{}
+
+func NewClockService() *Clock {
+	return &Clock{}
+}
 
 func (h *Clock) Read() time.Time {
 	return time.Now()

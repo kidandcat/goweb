@@ -1,6 +1,8 @@
 package backend
 
 import (
+	"goweb/backend/models"
+
 	"github.com/maxence-charriere/go-app/v10/pkg/app"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -17,5 +19,7 @@ func init() {
 	if err != nil {
 		panic("failed to connect database")
 	}
-	db.AutoMigrate(&Note{})
+
+	// Don't forget to run migrations if you create a new model
+	db.AutoMigrate(&models.Note{})
 }

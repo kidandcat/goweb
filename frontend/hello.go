@@ -2,7 +2,7 @@ package frontend
 
 import (
 	"fmt"
-	"goweb/backend"
+	"goweb/backend/services"
 
 	"github.com/maxence-charriere/go-app/v10/pkg/app"
 )
@@ -20,7 +20,7 @@ func (h *Hello) Render() app.UI {
 			Attr("value", h.initialNote).
 			OnInput(func(ctx app.Context, e app.Event) {
 				text := ctx.JSSrc().Get("value").String()
-				err := backend.NotesClient.Write(text)
+				err := services.NotesClient.Write(text)
 				fmt.Println("api.Write", text, err)
 			}),
 	)
@@ -28,7 +28,7 @@ func (h *Hello) Render() app.UI {
 
 func (h *Hello) OnMount(ctx app.Context) {
 	var err error
-	h.initialNote, err = backend.NotesClient.Read()
+	h.initialNote, err = services.NotesClient.Read()
 	if err != nil {
 		fmt.Println("NotesClient.Read", err)
 	}

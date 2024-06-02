@@ -3,7 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
-	"goweb/backend"
+	"goweb/backend/models"
+	"goweb/backend/services"
 	"goweb/frontend"
 	"log"
 	"net/http"
@@ -11,32 +12,23 @@ import (
 	"github.com/filecoin-project/go-jsonrpc"
 	"github.com/klauspost/compress/gzhttp"
 	"github.com/maxence-charriere/go-app/v10/pkg/app"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 )
 
-var SERVICES = map[string]Service{
-	"Notes": {
-		Service: &backend.NotesService{},
-		Client:  &backend.NotesClient,
-	},
-	"Clock": {
-		Service: &backend.Clock{},
-		Client:  &backend.ClockClient,
-	},
-}
-
-type Service struct {
-	Service interface{}
-	Client  interface{}
-}
-
 func main() {
-	frontend.RegisterRoutes()
+	// Register your new service Client here
+	clients := map[string]any{
+		"Notes": &services.NotesClient,
+		"Clock": &services.ClockClient,
+	}
 
+	frontend.RegisterRoutes()
 	if app.IsClient {
 		rpcUrl := fmt.Sprintf("http://%s/rpc", app.Window().URL().Host)
-		for name, service := range SERVICES {
+		for name, client := range clients {
 			_, err := jsonrpc.NewMergeClient(context.Background(), rpcUrl, name, []any{
-				service.Client,
+				client,
 			}, nil, jsonrpc.WithHTTPClient(&http.Client{}))
 			if err != nil {
 				log.Fatal(err)
@@ -45,19 +37,41 @@ func main() {
 	}
 	app.RunWhenOnBrowser()
 
+	if app.IsServer {
+		db := initializeDatabase()
+		// Register your new service here
+		services := map[string]any{
+			"Notes": services.NewNotesService(db),
+			"Clock": services.NewClockService(),
+		}
+		initializeRPC(services)
+
+		http.Handle("/", gzhttp.GzipHandler(&app.Handler{
+			Name:        "Hello RPC",
+			Description: "An Hello World! example",
+		}))
+
+		log.Println("Server started on http://localhost:8000")
+		if err := http.ListenAndServe(":8000", nil); err != nil {
+			log.Fatal(err)
+		}
+	}
+}
+
+func initializeDatabase() *gorm.DB {
+	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	if err != nil {
+		panic("failed to connect database")
+	}
+	// Don't forget to run migrations if you create a new model
+	db.AutoMigrate(&models.Note{})
+	return db
+}
+
+func initializeRPC(services map[string]any) {
 	rpcServer := jsonrpc.NewServer()
-	for name, service := range SERVICES {
-		rpcServer.Register(name, service.Service)
+	for name, service := range services {
+		rpcServer.Register(name, service)
 	}
 	http.Handle("/rpc", enableCors(rpcServer))
-
-	http.Handle("/", gzhttp.GzipHandler(&app.Handler{
-		Name:        "Hello RPC",
-		Description: "An Hello World! example",
-	}))
-
-	log.Println("Server started on http://localhost:8000")
-	if err := http.ListenAndServe(":8000", nil); err != nil {
-		log.Fatal(err)
-	}
 }
