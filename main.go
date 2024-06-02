@@ -49,6 +49,9 @@ func main() {
 		http.Handle("/", gzhttp.GzipHandler(&app.Handler{
 			Name:        "Hello RPC",
 			Description: "An Hello World! example",
+			Styles: []string{
+				"/web/dark.min.css",
+			},
 		}))
 
 		log.Println("Server started on http://localhost:8000")
