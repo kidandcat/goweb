@@ -17,7 +17,7 @@ import (
 )
 
 func main() {
-	// Register your new service Client here
+	// 1. Register your new client here
 	clients := map[string]any{
 		"Notes": &services.NotesClient,
 		"Clock": &services.ClockClient,
@@ -36,28 +36,29 @@ func main() {
 		}
 	}
 	app.RunWhenOnBrowser()
+	if !app.IsServer {
+		return
+	}
 
-	if app.IsServer {
-		db := initializeDatabase()
-		// Register your new service here
-		services := map[string]any{
-			"Notes": services.NewNotesService(db),
-			"Clock": services.NewClockService(),
-		}
-		initializeRPC(services)
+	db := initializeDatabase()
+	// 2. Register your new service here
+	services := map[string]any{
+		"Notes": services.NewNotesService(db),
+		"Clock": services.NewClockService(),
+	}
+	initializeRPC(services)
 
-		http.Handle("/", gzhttp.GzipHandler(&app.Handler{
-			Name:        "Hello RPC",
-			Description: "An Hello World! example",
-			Styles: []string{
-				"/web/dark.min.css",
-			},
-		}))
+	http.Handle("/", gzhttp.GzipHandler(&app.Handler{
+		Name:        "Hello RPC",
+		Description: "An Hello World! example",
+		Styles: []string{
+			"/web/dark.min.css",
+		},
+	}))
 
-		log.Println("Server started on http://localhost:8000")
-		if err := http.ListenAndServe(":8000", nil); err != nil {
-			log.Fatal(err)
-		}
+	log.Println("Server started on http://localhost:8000")
+	if err := http.ListenAndServe(":8000", nil); err != nil {
+		log.Fatal(err)
 	}
 }
 
@@ -66,7 +67,7 @@ func initializeDatabase() *gorm.DB {
 	if err != nil {
 		panic("failed to connect database")
 	}
-	// Don't forget to run migrations if you create a new model
+	// 3. Add an AutoMigrate if you create a new model
 	db.AutoMigrate(&models.Note{})
 	return db
 }
