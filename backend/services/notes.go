@@ -13,13 +13,13 @@ var NotesClient struct {
 
 type NotesService struct {
 	db         *gorm.DB
-	repository models.NoteRepository
+	repository *models.NoteRepository
 }
 
 func NewNotesService(db *gorm.DB) *NotesService {
 	return &NotesService{
 		db:         db,
-		repository: *models.NewNoteRepository(db),
+		repository: models.NewNoteRepository(db),
 	}
 }
 
