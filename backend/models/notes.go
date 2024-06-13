@@ -22,6 +22,9 @@ func (r *NoteRepository) First() *Note {
 	if err != nil && err != gorm.ErrRecordNotFound {
 		panic(err)
 	}
+	if err == gorm.ErrRecordNotFound {
+		return nil
+	}
 	return &note
 }
 
@@ -37,6 +40,9 @@ func (r *NoteRepository) Find(id uint) *Note {
 	err := r.DB.First(&note, id).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		panic(err)
+	}
+	if err == gorm.ErrRecordNotFound {
+		return nil
 	}
 	return &note
 }

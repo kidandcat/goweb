@@ -4,6 +4,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -95,4 +96,36 @@ func TestNewNoteRepository(t *testing.T) {
 	if repo.DB != db {
 		t.Error("Expected DB to be set correctly")
 	}
+}
+
+func TestNoteRepository_Find(t *testing.T) {
+	db, err := gorm.Open(sqlite.Open("file::memory:?cache=shared"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	repo := NewNoteRepository(db)
+
+	// Create a test note
+	expectedContent := "Test Note"
+	note := &Note{Content: expectedContent}
+	repo.Save(note)
+
+	// Call the Find method
+	foundNote := repo.Find(note.ID)
+
+	// Check if the found note matches the expected note
+	assert.NotNil(t, foundNote)
+	assert.Equal(t, expectedContent, foundNote.Content)
+}
+
+func TestNoteRepository_FindNil(t *testing.T) {
+	db, err := gorm.Open(sqlite.Open("file::memory:?cache=shared"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	repo := NewNoteRepository(db)
+
+	// Call the Find method
+	foundNote := repo.Find(0)
+	assert.Nil(t, foundNote)
 }
