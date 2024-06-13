@@ -31,7 +31,7 @@ func (h *NotesService) Read() (string, error) {
 func (h *NotesService) Write(in string) {
 	n := h.repository.First()
 	if n == nil {
-		h.repository.Create(&models.Note{Content: in})
+		h.repository.Save(&models.Note{Content: in})
 	} else {
 		n.Content = in
 		h.repository.Save(n)

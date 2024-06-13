@@ -16,13 +16,6 @@ func NewNoteRepository(db *gorm.DB) *NoteRepository {
 	return &NoteRepository{DB: db}
 }
 
-func (r *NoteRepository) Create(note *Note) {
-	err := r.DB.Create(note).Error
-	if err != nil {
-		panic(err)
-	}
-}
-
 func (r *NoteRepository) First() *Note {
 	var note Note
 	err := r.DB.First(&note).Error
@@ -33,9 +26,17 @@ func (r *NoteRepository) First() *Note {
 }
 
 func (r *NoteRepository) Save(note *Note) {
-	panic("test panic")
 	err := r.DB.Save(note).Error
 	if err != nil {
 		panic(err)
 	}
+}
+
+func (r *NoteRepository) Find(id uint) *Note {
+	var note Note
+	err := r.DB.First(&note, id).Error
+	if err != nil && err != gorm.ErrRecordNotFound {
+		panic(err)
+	}
+	return &note
 }
