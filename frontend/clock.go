@@ -14,7 +14,9 @@ type Clock struct {
 }
 
 func (h *Clock) Render() app.UI {
-	return app.H2().Text(fmt.Sprintf("Clock: %v", h.now.Format(time.RFC3339)))
+	return app.H2().
+		Class("clock").
+		Text(fmt.Sprintf("Clock: %v", h.now.Format(time.RFC3339)))
 }
 
 func (h *Clock) OnMount(ctx app.Context) {

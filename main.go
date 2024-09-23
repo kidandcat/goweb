@@ -52,6 +52,7 @@ func main() {
 		Description: "An Hello World! example",
 		Styles: []string{
 			"/web/dark.min.css",
+			"/web/styles.css",
 		},
 	}))
 

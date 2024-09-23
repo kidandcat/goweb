@@ -15,9 +15,14 @@ type Hello struct {
 
 func (h *Hello) Render() app.UI {
 	return app.Div().Body(
-		app.H1().Text("Hello World!"),
-		&Clock{},
+		app.H1().
+			Class("title").
+			Text("Hello World!"),
+		app.Div().
+			Class("clock-container").
+			Body(&Clock{}),
 		app.Textarea().
+			Class("note-textarea").
 			Attr("value", h.initialNote).
 			OnInput(func(ctx app.Context, e app.Event) {
 				text := ctx.JSSrc().Get("value").String()

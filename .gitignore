@@ -2,3 +2,4 @@ web/app.wasm
 goweb
 *.db
 .DS_Store
+.aider*
