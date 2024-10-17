@@ -9,7 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
-var DB_NAME = "test.db"
+var DB_NAME = "file::memory:?cache=shared"
 
 func TestMain(m *testing.M) {
 	code := m.Run()
@@ -17,7 +17,7 @@ func TestMain(m *testing.M) {
 }
 
 func TestNoteRepository_First(t *testing.T) {
-	db, err := gorm.Open(sqlite.Open(DB_NAME), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open(DB_NAME))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -40,7 +40,7 @@ func TestNoteRepository_First(t *testing.T) {
 }
 
 func TestNoteRepository_Save(t *testing.T) {
-	db, err := gorm.Open(sqlite.Open(DB_NAME), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open(DB_NAME))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -66,7 +66,7 @@ func TestNoteRepository_Save(t *testing.T) {
 }
 
 func TestNoteRepository_Create(t *testing.T) {
-	db, err := gorm.Open(sqlite.Open(DB_NAME), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open(DB_NAME))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -85,7 +85,7 @@ func TestNoteRepository_Create(t *testing.T) {
 }
 
 func TestNewNoteRepository(t *testing.T) {
-	db, err := gorm.Open(sqlite.Open(DB_NAME), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open(DB_NAME))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -99,7 +99,7 @@ func TestNewNoteRepository(t *testing.T) {
 }
 
 func TestNoteRepository_Find(t *testing.T) {
-	db, err := gorm.Open(sqlite.Open("file::memory:?cache=shared"))
+	db, err := gorm.Open(sqlite.Open(DB_NAME))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -119,7 +119,7 @@ func TestNoteRepository_Find(t *testing.T) {
 }
 
 func TestNoteRepository_FindNil(t *testing.T) {
-	db, err := gorm.Open(sqlite.Open("file::memory:?cache=shared"))
+	db, err := gorm.Open(sqlite.Open(DB_NAME))
 	if err != nil {
 		t.Fatal(err)
 	}

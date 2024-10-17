@@ -31,7 +31,6 @@ func (h *Hello) Render() app.UI {
 					msgs := strings.Split(err.Error(), ":")
 					app.Window().Call("alert", msgs[len(msgs)-1])
 				}
-				fmt.Println("api.Write", text, err)
 			}),
 	)
 }
